@@ -29,6 +29,16 @@
 		BDDAB1F52F95B32000778980 /* StockGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		685A7C512F960E5D005D082F /* Exceptions for "Model" folder in "StockGame" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Untitled.swift,
+			);
+			target = BDDAB1DB2F95B31F00778980 /* StockGame */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BDDAB1DE2F95B31F00778980 /* StockGame */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -47,6 +57,9 @@
 		};
 		BDDAB2A12F95FC0300778980 /* Model */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				685A7C512F960E5D005D082F /* Exceptions for "Model" folder in "StockGame" target */,
+			);
 			path = Model;
 			sourceTree = "<group>";
 		};

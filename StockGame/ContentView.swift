@@ -15,23 +15,6 @@ enum ItemType: String, CaseIterable, Identifiable {
 let day: Double = 86400
 
 
-
-// MARK: - Game Resources
-struct GameResources {
-    var dollars: Double = 10_000.00
-    var gold: Int = 0
-    var silver: Int = 0
-}
-
-struct NewsEffect {
-    enum EffectDirection { case up, down }
-    var type: ItemType
-    var direction: EffectDirection
-    var magnitude: Double
-}
-
-
-
 struct ContentView: View {
     @State var stocks: [Stock] = [
         Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: [
