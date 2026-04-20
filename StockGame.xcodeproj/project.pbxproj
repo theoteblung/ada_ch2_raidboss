@@ -45,6 +45,11 @@
 			path = StockGameUITests;
 			sourceTree = "<group>";
 		};
+		BDDAB2A12F95FC0300778980 /* Model */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +80,7 @@
 		BDDAB1D32F95B31F00778980 = {
 			isa = PBXGroup;
 			children = (
+				BDDAB2A12F95FC0300778980 /* Model */,
 				BDDAB1DE2F95B31F00778980 /* StockGame */,
 				BDDAB1EE2F95B32000778980 /* StockGameTests */,
 				BDDAB1F82F95B32000778980 /* StockGameUITests */,
@@ -109,6 +115,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				BDDAB1DE2F95B31F00778980 /* StockGame */,
+				BDDAB2A12F95FC0300778980 /* Model */,
 			);
 			name = StockGame;
 			packageProductDependencies = (
