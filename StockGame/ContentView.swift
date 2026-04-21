@@ -4,47 +4,66 @@
 //
 //  Created by Fadil Himawan on 20/04/26.
 //
+/// TODO:
+/// 1. How to use observable -> move gameTime, resources, news
+/// 2. Create example data -> news, commodities and stocks
+/// 3. Think how news can affect stocks and commodities based on newsEffect
+/// 4. Create new tab for InverntoryScreen
 
 
 import SwiftUI
-import Charts
-enum ItemType: String, CaseIterable, Identifiable {
-    case commodities, stocks
-    var id: Self { self }
-}
-let day: Double = 86400
 
+let day: Double = 86400 // in seconds
 
 struct ContentView: View {
-    @State var stocks: [Stock] = [
-        Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: [
+    @State private var stocks: [Stock] = [
+        Stock(
+            symbol: "AAPL",
+              name: "Apple Inc.",
+              category: .technology,
+              priceHistory: [
+            .init(date: Date().addingTimeInterval(day * -4), price: 100),
+            .init(date: Date().addingTimeInterval(day * -3), price: 210),
+            .init(date: Date().addingTimeInterval(day * -2), price: 190),
+            .init(date: Date().addingTimeInterval(day * -1), price: 210),
+            .init(date: Date().addingTimeInterval(day), price: 259.20),
+        ],
+        ),
+        Stock(symbol: "MSFT", name: "Microsoft Inc.",
+              category: .technology,priceHistory: [
+            .init(date: Date(), price: -1),
+        ]),
+    ]
+    @State private var commodities: [Commodity] = [
+        Commodity(
+            name: "Gold",
+                  category: .mining,
+            priceHistory: [
             .init(date: Date().addingTimeInterval(day * -4), price: 100),
             .init(date: Date().addingTimeInterval(day * -3), price: 210),
             .init(date: Date().addingTimeInterval(day * -2), price: 190),
             .init(date: Date().addingTimeInterval(day * -1), price: 210),
             .init(date: Date().addingTimeInterval(day), price: 259.20),
         ]),
-        Stock(symbol: "MSFT", name: "Microsoft Inc.", priceHistory: [
+        Commodity(name: "Silver",
+                  category: .mining,
+                  priceHistory: [
             .init(date: Date(), price: -1),
         ]),
-    ]
-    @State var commodities: [Stock] = [
-        Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: [
+        Commodity(
+            name: "Bronze",
+                  category: .mining,priceHistory: [
             .init(date: Date().addingTimeInterval(day * -4), price: 100),
             .init(date: Date().addingTimeInterval(day * -3), price: 210),
             .init(date: Date().addingTimeInterval(day * -2), price: 190),
             .init(date: Date().addingTimeInterval(day * -1), price: 210),
             .init(date: Date().addingTimeInterval(day), price: 259.20),
         ]),
-        Stock(symbol: "MSFT", name: "Microsoft Inc.", priceHistory: [
-            .init(date: Date(), price: -1),
-        ]),
     ]
-    @State var gameTime = GameTime()
-    @State var resources = GameResources()
-    @State var showSheet = true
-    @State var selectedType: ItemType = .commodities
-    @State var newsItems: [NewsItem] = [
+
+    @State private var gameTime = GameTime()
+    @State private var resources = GameResources()
+    @State private var news = NewsStore(items: [
         .init(title: "Oil Surges on Supply Concerns", date: Date().addingTimeInterval(day * -1), description: "Global oil prices jumped as OPEC announced unexpected production cuts, raising fears of shortages ahead of the summer season.", effects: [
             .init(type: .commodities, direction: .up, magnitude: 0.05)
         ]),
@@ -55,9 +74,11 @@ struct ContentView: View {
             .init(type: .commodities, direction: .down, magnitude: 0.03),
             .init(type: .stocks, direction: .down, magnitude: 0.04)
         ]),
-    ]
-    @State var currentNewsIndex = 0
-    @State var newsTransition = false
+    ])
+
+    @State var selectedType: ItemType = .stocks
+    
+    private let newsTransitionTime: TimeInterval = 4 * 2 // in seconds
 
     var body: some View {
 
@@ -66,22 +87,26 @@ struct ContentView: View {
                 Text("News")
                     .padding(.horizontal)
 
-                NewsCard(item: newsItems[currentNewsIndex], transition: newsTransition)
-                    .padding(.horizontal)
-                    .onAppear {
-                        Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
-                            withAnimation(.easeInOut(duration: 0.5)) {
-                                newsTransition = true
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                currentNewsIndex = (currentNewsIndex + 1) % newsItems.count
-                                newsTransition = false
+                if !news.items.isEmpty {
+                    NewsCard(item: news.items[news.currentIndex])
+                        .padding(.horizontal)
+                        .offset(y: news.transition ? 0 : -10)
+                        .opacity(news.transition ? 1 : 0)
+                        .onAppear {
+                            guard !news.items.isEmpty else { return }
+                            Timer.scheduledTimer(withTimeInterval: newsTransitionTime, repeats: true) { _ in
                                 withAnimation(.easeInOut(duration: 0.5)) {
-                                    newsTransition = true
+                                    news.transition = false
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    news.currentIndex = (news.currentIndex + 1) % news.items.count
+                                    withAnimation(.easeInOut(duration: 0.5)) {
+                                        news.transition = true
+                                    }
                                 }
                             }
                         }
-                    }
+                }
                 
                 List {
                     Menu {
@@ -102,17 +127,28 @@ struct ContentView: View {
                         .foregroundStyle(.white)
 
                     }
-
-                    ForEach(stocks) { stock in
-                        StocksCard(stock: stock)
-                            .swipeActions {
-                                Button(role: .destructive) {} label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                    
+                    let shownList: [any Item] = selectedType == .commodities ? commodities : stocks
+                    ForEach(shownList, id: \.id) { item in
+                        Group {
+                            if let stock = item as? Stock {
+                                StocksCard(stock: stock)
+                            } else if let commodity = item as? Commodity {
+                                CommodityCard(commodity: commodity)
                             }
-                    }.onMove {
-                        from, to in
-                        stocks.move(fromOffsets: from, toOffset: to)
+                        }
+                        .swipeActions {
+                            Button(role: .destructive) {} label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                    .onMove { from, to in
+                        if selectedType == .commodities {
+                            commodities.move(fromOffsets: from, toOffset: to)
+                        } else {
+                            stocks.move(fromOffsets: from, toOffset: to)
+                        }
                     }
 
                 }
@@ -124,21 +160,22 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text("Raid Boss")
                             .font(.title)
-                        HStack(spacing: 4) {
-                            Text(gameTime.formattedDate).font(.subheadline).foregroundStyle(.secondary)
-                            Text("·").foregroundStyle(.secondary)
-                            Text(gameTime.formattedTime).font(.subheadline).foregroundStyle(.secondary)
+                        
+                        TimelineView(.periodic(from: .now, by: 1)) { context in
+                            let currentGameDate = gameTime.currentDate(at: context.date)
+
+                            HStack(spacing: 4) {
+                                Text(gameTime.formattedDate(from: currentGameDate))
+                                Text("·")
+                                Text(gameTime.formattedTime(from: currentGameDate))
+                            }
                         }
                     }
                     .frame(width: 120, alignment: .leading)
-                    .onAppear {
-                        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                            // trigger view re-render for game clock
-                        }
-                    }
 
                 }
                 .sharedBackgroundVisibility(.hidden)
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     ResourceBar(resources: resources)
                 }
@@ -151,113 +188,7 @@ struct ContentView: View {
     }
 }
 
-
-
-struct NewsCard: View {
-    var item: NewsItem
-    var transition: Bool
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(item.title)
-                    .font(.headline)
-                Spacer()
-                Text(item.date, style: .relative)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Text(item.description)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
-
-            HStack(spacing: 6) {
-                ForEach(item.effects, id: \.type) { effect in
-                    Label {
-                        Text("\(effect.type.rawValue.capitalized) \(effect.direction == .up ? "↑" : "↓") \(Int(effect.magnitude * 100))%")
-                            .font(.caption2.bold())
-                    } icon: {
-                        Circle()
-                            .fill(effect.direction == .up ? .green : .red)
-                            .frame(width: 6, height: 6)
-                    }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(.ultraThinMaterial, in: Capsule())
-                }
-            }
-        }
-        .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
-        .offset(y: transition ? 0 : -10)
-        .opacity(transition ? 1 : 0)
-    }
-}
-
-struct StocksCard: View {
-
-    var stock: Stock
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(stock.symbol)
-                    .font(.title2.bold())
-                    .lineLimit(1)
-                Text(stock.name)
-                    .lineLimit(1)
-                    .foregroundStyle(.gray)
-            }.frame(width: 100, alignment: .leading)
-            Spacer()
-            //chart
-            Chart {
-                ForEach(stock.priceHistory, id: \.date) { item in
-                    AreaMark(x: .value("Date", item.date), y: .value("Price", item.price))
-                        .foregroundStyle(
-                            LinearGradient(gradient: .init(colors: [stock.statusColor().opacity(0.5), .clear]), startPoint: .top, endPoint:
-                                    .bottom)
-                        )
-                    LineMark(x: .value("Date", item.date), y: .value("Price", item.price))
-                        .foregroundStyle(stock.statusColor())
-                    RuleMark(
-                        y: .value("Threshold", 200)
-                    )
-                    .lineStyle(StrokeStyle(lineWidth: 2, dash : [10,5]))
-                    .foregroundStyle(stock.statusColor())
-                }
-            }
-            .frame(width: 100, height: 50)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            VStack(alignment: .trailing) {
-                Text("\(stock.lastPrice, specifier: "%.2f")")
-                Button {
-
-                } label: {
-                    Text("\(stock.change, specifier: "%.2f")").foregroundStyle(.white)
-                        .font(.system(size: 14, weight: .bold))
-                        .padding(.horizontal, 4)
-
-                }
-
-                .frame(width: 60, alignment: .trailing)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(stock.statusColor())
-                )
-
-            }
-        }
-    }
-}
-
-
-
-
-
-// MARK: - Resource Bar (Clash of Clans style)
+// MARK: - Resource Bar
 struct ResourceBar: View {
     var resources: GameResources
 

@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
-// MARK: - Game Resources
-struct GameResources {
+import Observation
+
+@Observable
+final class GameResources {
     var dollars: Double = 10_000.00
     var gold: Int = 0
     var silver: Int = 0

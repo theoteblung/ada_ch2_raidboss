@@ -5,11 +5,32 @@
 //  Created by Fadil Himawan on 20/04/26.
 //
 import SwiftUI
+
+enum ItemCategory: String, CaseIterable {
+    case technology, finance, mining, defense, energy, food
+}
+
+enum ItemType: String, CaseIterable, Identifiable {
+    case commodities, stocks
+    var id: Self { self }
+}
+
+
+protocol Item: Identifiable {
+    var id: UUID { get }
+    var name: String { get }
+    
+    var category: ItemCategory { get }
+    var priceHistory: [PriceHistory] { get }
+}
+
 // Model for our stock app
-struct Stock: Identifiable {
+struct Stock: Item {
     let id = UUID()
     var symbol: String
     var name: String
+    
+    var category: ItemCategory
     var priceHistory: [PriceHistory]
 
     var change: Double {
@@ -20,7 +41,28 @@ struct Stock: Identifiable {
         priceHistory.last?.price ?? 0.0
     }
 
-    func statusColor() -> Color {
+    var statusColor: Color {
+        guard priceHistory.count >= 2 else { return .gray }
+        return lastPrice > priceHistory[0].price ? .green : .red
+    }
+}
+
+struct Commodity: Item {
+    let id = UUID()
+    var name: String
+    
+    var category: ItemCategory
+    var priceHistory: [PriceHistory]
+
+    var change: Double {
+        lastPrice - (priceHistory[0].price)
+    }
+
+    var lastPrice: Double {
+        priceHistory.last?.price ?? 0.0
+    }
+
+    var statusColor: Color {
         guard priceHistory.count >= 2 else { return .gray }
         return lastPrice > priceHistory[0].price ? .green : .red
     }

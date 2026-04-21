@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Observation
 
 struct NewsItem: Identifiable {
     let id = UUID()
@@ -13,4 +14,15 @@ struct NewsItem: Identifiable {
     var date: Date
     var description: String
     var effects: [NewsEffect]
+}
+
+@Observable
+final class NewsStore {
+    var items: [NewsItem] = []
+    var currentIndex: Int = 0
+    var transition: Bool = true
+    
+    init(items: [NewsItem]) {
+        self.items = items
+    }
 }
