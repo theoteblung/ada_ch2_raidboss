@@ -8,7 +8,7 @@ import SwiftUI
 import Charts
 // MARK: - Detailed Sheet (Page 2)
 struct AttackDetailSheetV1: View {
-    @Binding var isShowSheet: Bool
+    @Environment(\.dismiss) private var dismiss
     @State var selectedStock: Stock
     @State var commodities: [Commodity]
     let resources: GameResources
@@ -152,7 +152,7 @@ struct AttackDetailSheetV1: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("X") {
-                        isShowSheet.toggle()
+                        dismiss()
                     }
                 }
             }
@@ -229,7 +229,7 @@ struct AttackDetailSheetV1: View {
                 resources.dollars += Double(resources.gold) * oilInfo().priceHistory.last!.price
                 resources.oil = 0
             }
-            isShowSheet.toggle()
+            dismiss()
         }
     }
 }
@@ -249,7 +249,7 @@ struct DetailRow: View {
 
 
 #Preview {
-    AttackDetailSheetV1(isShowSheet: .constant(true), selectedStock: SeedData.stocks[0], commodities: SeedData.commodities, resources: GameResources())
+    AttackDetailSheetV1(selectedStock: SeedData.stocks[0], commodities: SeedData.commodities, resources: GameResources())
 }
 //pass resource as a binding result
 // when launch operation, apply confirmation dialog
