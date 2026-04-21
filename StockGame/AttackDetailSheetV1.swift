@@ -8,14 +8,7 @@ import SwiftUI
 import Charts
 // MARK: - Detailed Sheet (Page 2)
 struct AttackDetailSheetV1: View {
-    @State var stockDetail: Stock =
-        Stock(symbol: "AAPL", name: "Apple Inc.", priceHistory: [
-            .init(date: Date().addingTimeInterval(day * -4), price: 100),
-            .init(date: Date().addingTimeInterval(day * -3), price: 210),
-            .init(date: Date().addingTimeInterval(day * -2), price: 190),
-            .init(date: Date().addingTimeInterval(day * -1), price: 210),
-            .init(date: Date().addingTimeInterval(day), price: 259.20),
-        ])
+    @State private var stockDetail: Stock = SeedData.stocks[0]
     @State private var selectedRaidAttackID: UUID? = nil
     @State private var selectedRaidInfo: RaidAttack? = nil
     var raidAttacks: [RaidAttack] = [
@@ -58,16 +51,16 @@ struct AttackDetailSheetV1: View {
                                 ForEach(stockDetail.priceHistory, id: \.date) { item in
                                     AreaMark(x: .value("Date", item.date), y: .value("Price", item.price))
                                         .foregroundStyle(
-                                            LinearGradient(gradient: .init(colors: [stockDetail.statusColor().opacity(0.5), .clear]), startPoint: .top, endPoint:
+                                            LinearGradient(gradient: .init(colors: [stockDetail.statusColor.opacity(0.5), .clear]), startPoint: .top, endPoint:
                                                     .bottom)
                                         )
                                     LineMark(x: .value("Date", item.date), y: .value("Price", item.price))
-                                        .foregroundStyle(stockDetail.statusColor())
+                                        .foregroundStyle(stockDetail.statusColor)
                                     RuleMark(
                                         y: .value("Threshold", 200)
                                     )
                                     .lineStyle(StrokeStyle(lineWidth: 2, dash : [10,5]))
-                                    .foregroundStyle(stockDetail.statusColor())
+                                    .foregroundStyle(stockDetail.statusColor)
                                 }
                             }
                             .frame(height: 150)
