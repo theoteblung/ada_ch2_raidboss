@@ -10,23 +10,18 @@ import SwiftData
 
 @main
 struct StockGameApp: App {
-//    var sharedModelContainer: ModelContainer = {
-//        let schema = Schema([
-//            Item.self,
-//        ])
-//        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-//
-//        do {
-//            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-//        } catch {
-//            fatalError("Could not create ModelContainer: \(error)")
-//        }
-//    }()
+    @State private var stocks: [Stock] = SeedData.stocks
+    @State private var commodities: [Commodity] = SeedData.commodities
+    
+    @State private var news = NewsStore(items: SeedData.newsItems)
+    @State private var gameTime = GameTime()
+    @State private var resources = GameResources()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(
+                stocks: $stocks, commodities: $commodities, news: news, gameTime: gameTime, resources: resources
+            )
         }
-//        .modelContainer(sharedModelContainer)
     }
 }

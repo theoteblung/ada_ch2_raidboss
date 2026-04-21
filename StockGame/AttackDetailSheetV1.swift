@@ -8,6 +8,13 @@ import SwiftUI
 import Charts
 // MARK: - Detailed Sheet (Page 2)
 struct AttackDetailSheetV1: View {
+    @Binding var isShowSheet: Bool
+    @State var selectedStock: Stock
+    @State var commodities: [Commodity]
+    let resources: GameResources
+    
+    
+    
     @State private var stockDetail: Stock = SeedData.stocks[0]
     @State private var goldInfo: Commodity = SeedData.commodities[0]
     @State private var silverInfo: Commodity = SeedData.commodities[1]
@@ -128,7 +135,9 @@ struct AttackDetailSheetV1: View {
                             .cornerRadius(10)
                         }
                         
-                        Button(action: {}) {
+                        Button(action: {
+                            isShowSheet.toggle()
+                        }) {
                             Text("Launch Operation")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -204,7 +213,7 @@ struct DetailRow: View {
 
 
 #Preview {
-    AttackDetailSheetV1()
+//    AttackDetailSheetV1()
 }
 //pass resource as a binding result
 // when launch operation, apply confirmation dialog
