@@ -15,12 +15,11 @@ struct RaidView: View {
     let gameTime: GameTime
     let resources: GameResources
     
-    
     @State var selectedType: ItemType = .stocks
     @State private var hasStartedNewsRotation = false
     @State private var lastAppliedNewsID: NewsItem.ID?
     
-    @State private var isShowingDetailSheet: Bool = false
+    @State private var selectedStock: Stock?
     
     private let newsTransitionTime: TimeInterval = 4 * 2 // in seconds
     
@@ -81,11 +80,8 @@ struct RaidView: View {
                         Group {
                             if let stock = item as? Stock {
                                 StocksCard(stock: stock)
-                                    .sheet(isPresented: $isShowingDetailSheet) {
-                                        AttackDetailSheetV1(isShowSheet: $isShowingDetailSheet, selectedStock: stock, commodities: commodities, resources: resources)
-                                    }
                                 .onTapGesture {
-                                    isShowingDetailSheet.toggle()
+                                    selectedStock = stock
                                 }
                             } else if let commodity = item as? Commodity {
                                 CommodityCard(commodity: commodity)
@@ -138,8 +134,12 @@ struct RaidView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
+            .sheet(item: $selectedStock, onDismiss: {
+                
+            }) { selected in
+                AttackDetailSheetV1(selectedStock: selected, commodities: commodities, resources: resources)
+            }
             .preferredColorScheme(.dark)
-            
             
         }
         
@@ -148,6 +148,7 @@ struct RaidView: View {
     private func applyCurrentNewsEffectsIfNeeded() {
         guard news.items.indices.contains(news.currentIndex) else { return }
         
+        // only apply effect if news is different than previous
         let currentNews = news.items[news.currentIndex]
         guard currentNews.id != lastAppliedNewsID else { return }
         

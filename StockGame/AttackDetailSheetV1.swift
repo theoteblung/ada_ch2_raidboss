@@ -8,7 +8,7 @@ import SwiftUI
 import Charts
 // MARK: - Detailed Sheet (Page 2)
 struct AttackDetailSheetV1: View {
-    @Binding var isShowSheet: Bool
+    @Environment(\.dismiss) private var dismiss
     @State var selectedStock: Stock
     @State var commodities: [Commodity]
     let resources: GameResources
@@ -136,7 +136,7 @@ struct AttackDetailSheetV1: View {
                         }
                         
                         Button(action: {
-                            isShowSheet.toggle()
+//                            isShowSheet.toggle()
                         }) {
                             Text("Launch Operation")
                                 .font(.headline)
