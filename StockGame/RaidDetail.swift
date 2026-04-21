@@ -7,7 +7,7 @@
 import SwiftUI
 import Charts
 // MARK: - Detailed Sheet (Page 2)
-struct AttackDetailSheetV1: View {
+struct RaidDetail: View {
     @Environment(\.dismiss) private var dismiss
     @State var selectedStock: Stock
     @State var commodities: [Commodity]
@@ -30,65 +30,36 @@ struct AttackDetailSheetV1: View {
                 
                 ScrollView {
                     VStack(spacing: 25) {
-                        // Header & Price
+                        //logo, price & price change
                         VStack(spacing: 8) {
-                            Image("\(selectedStock.symbol.lowercased())")
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                                .font(.system(size: 60))
-                                .padding()
-                            
-                            Text("$\(selectedStock.priceHistory.last!.price, specifier: "%.2f")")
-                                .font(.system(size: 44, weight: .bold, design: .rounded))
-                            
-                            
-                            Text("\(String(format: "%.2f", selectedStock.change))(\(String(format: "%.2f", selectedStock.changePercentage))%)")
-                                .foregroundColor(.green)
-                                .font(.headline)
+                            RaidDetailMain(selectedStock: selectedStock)
                         }
                         
-                        // Simulated Candlestick Chart
+                        
+                        //chart
                         VStack(alignment: .leading) {
-                            Text("Market Sentiment (6M)")
-                                .font(.caption.bold())
-                                .foregroundColor(.secondary)
-//                            CandleStickView()
-//                                .frame(height: 200)
-                            Chart {
-                                ForEach(selectedStock.priceHistory, id: \.date) { item in
-                                    AreaMark(x: .value("Date", item.date), y: .value("Price", item.price))
-                                        .foregroundStyle(
-                                            LinearGradient(gradient: .init(colors: [selectedStock.statusColor.opacity(0.5), .clear]), startPoint: .top, endPoint:
-                                                    .bottom)
-                                        )
-                                    LineMark(x: .value("Date", item.date), y: .value("Price", item.price))
-                                        .foregroundStyle(selectedStock.statusColor)
-                                    RuleMark(
-                                        y: .value("Threshold", 200)
-                                    )
-                                    .lineStyle(StrokeStyle(lineWidth: 2, dash : [10,5]))
-                                    .foregroundStyle(selectedStock.statusColor)
-                                }
-                            }
-                            .frame(height: 150)
-                            .padding(20)
-                            .preferredColorScheme(.dark)
+                            RaidDetailChart(selectedStock: selectedStock)
                         }
                         .padding()
                         .background(Color(uiColor: .tertiarySystemBackground))
                         .cornerRadius(12)
+                        
+                        
+                        
                         
                         // Details Section
                         VStack(alignment: .leading, spacing: 12) {
-                            DetailRow(label: "Specialty", value: "Mac, Apple Watch, Iphone")
-                            DetailRow(label: "Potential Reward", value: "100 \(selectedStock.symbol) Shares")
+                            RaidDetailInfo(label: "Specialty", value: "Mac, Apple Watch, Iphone")
+                            RaidDetailInfo(label: "Potential Reward", value: "100 \(selectedStock.symbol) Shares")
                         }
                         .padding()
                         .background(Color(uiColor: .tertiarySystemBackground))
                         .cornerRadius(12)
                         
+                        
                         // Raid Methods Selection
                         VStack(alignment: .leading, spacing: 15) {
+                            
                             Text("Select Operation Method")
                                 .font(.headline)
                             
@@ -234,22 +205,12 @@ struct AttackDetailSheetV1: View {
     }
 }
 
-struct DetailRow: View {
-    var label: String; var value: String
-    
-    var body: some View {
-        HStack {
-            Text(label).foregroundColor(.secondary)
-            Spacer()
-            Text(value).bold()
-        }
-        .font(.subheadline)
-    }
-}
+
+
 
 
 #Preview {
-    AttackDetailSheetV1(selectedStock: SeedData.stocks[0], commodities: SeedData.commodities, resources: GameResources())
+    RaidDetail(selectedStock: SeedData.stocks[0], commodities: SeedData.commodities, resources: GameResources())
 }
 //pass resource as a binding result
 // when launch operation, apply confirmation dialog

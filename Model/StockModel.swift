@@ -49,6 +49,12 @@ struct Stock: Item {
         guard priceHistory.count >= 2 else { return .gray }
         return lastPrice > priceHistory[0].price ? .green : .red
     }
+    
+    var avgPrice: Double {
+        let totalSum = priceHistory.reduce(0.0) { $0 + $1.price }
+        let averagePrice = totalSum / Double(priceHistory.count)
+        return averagePrice
+    }
 }
 
 struct Commodity: Item {
