@@ -15,6 +15,10 @@ enum ItemType: String, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
+struct PriceHistory {
+    var date: Date
+    var price: Double
+}
 
 protocol Item: Identifiable {
     var id: UUID { get }
