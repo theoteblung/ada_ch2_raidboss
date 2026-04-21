@@ -7,7 +7,7 @@
 import SwiftUI
 struct NewsEffect {
     enum EffectDirection { case up, down }
-    var type: ItemType
+    var category: ItemCategory
     var direction: EffectDirection
     var magnitude: Double
 }

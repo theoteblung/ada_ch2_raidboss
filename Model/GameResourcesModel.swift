@@ -13,4 +13,5 @@ final class GameResources {
     var dollars: Double = 10_000.00
     var gold: Int = 0
     var silver: Int = 0
+    var oil: Int = 0
 }

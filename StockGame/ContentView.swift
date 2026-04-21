@@ -13,68 +13,13 @@
 
 import SwiftUI
 
-let day: Double = 86400 // in seconds
-
 struct ContentView: View {
-    @State private var stocks: [Stock] = [
-        Stock(
-            symbol: "AAPL",
-              name: "Apple Inc.",
-              category: .technology,
-              priceHistory: [
-            .init(date: Date().addingTimeInterval(day * -4), price: 100),
-            .init(date: Date().addingTimeInterval(day * -3), price: 210),
-            .init(date: Date().addingTimeInterval(day * -2), price: 190),
-            .init(date: Date().addingTimeInterval(day * -1), price: 210),
-            .init(date: Date().addingTimeInterval(day), price: 259.20),
-        ],
-        ),
-        Stock(symbol: "MSFT", name: "Microsoft Inc.",
-              category: .technology,priceHistory: [
-            .init(date: Date(), price: -1),
-        ]),
-    ]
-    @State private var commodities: [Commodity] = [
-        Commodity(
-            name: "Gold",
-                  category: .mining,
-            priceHistory: [
-            .init(date: Date().addingTimeInterval(day * -4), price: 100),
-            .init(date: Date().addingTimeInterval(day * -3), price: 210),
-            .init(date: Date().addingTimeInterval(day * -2), price: 190),
-            .init(date: Date().addingTimeInterval(day * -1), price: 210),
-            .init(date: Date().addingTimeInterval(day), price: 259.20),
-        ]),
-        Commodity(name: "Silver",
-                  category: .mining,
-                  priceHistory: [
-            .init(date: Date(), price: -1),
-        ]),
-        Commodity(
-            name: "Bronze",
-                  category: .mining,priceHistory: [
-            .init(date: Date().addingTimeInterval(day * -4), price: 100),
-            .init(date: Date().addingTimeInterval(day * -3), price: 210),
-            .init(date: Date().addingTimeInterval(day * -2), price: 190),
-            .init(date: Date().addingTimeInterval(day * -1), price: 210),
-            .init(date: Date().addingTimeInterval(day), price: 259.20),
-        ]),
-    ]
+    @State private var stocks: [Stock] = SeedData.stocks
+    @State private var commodities: [Commodity] = SeedData.commodities
+    @State private var news = NewsStore(items: SeedData.newsItems)
 
     @State private var gameTime = GameTime()
     @State private var resources = GameResources()
-    @State private var news = NewsStore(items: [
-        .init(title: "Oil Surges on Supply Concerns", date: Date().addingTimeInterval(day * -1), description: "Global oil prices jumped as OPEC announced unexpected production cuts, raising fears of shortages ahead of the summer season.", effects: [
-            .init(type: .commodities, direction: .up, magnitude: 0.05)
-        ]),
-        .init(title: "Tech Stocks Rally on Earnings Beat", date: Date(), description: "Major tech companies reported better-than-expected quarterly results, driving a broad market rally in the sector.", effects: [
-            .init(type: .stocks, direction: .up, magnitude: 0.08)
-        ]),
-        .init(title: "Trade Tensions Escalate", date: Date().addingTimeInterval(day * -2), description: "New tariff announcements between major economies have rattled commodity markets, with gold and silver seeing sharp movements.", effects: [
-            .init(type: .commodities, direction: .down, magnitude: 0.03),
-            .init(type: .stocks, direction: .down, magnitude: 0.04)
-        ]),
-    ])
 
     @State var selectedType: ItemType = .stocks
     
@@ -197,6 +142,7 @@ struct ResourceBar: View {
             ResourceItem(icon: "💰", amount: formattedDollar(resources.dollars))
             ResourceItem(icon: "🏅", amount: "\(resources.gold)")
             ResourceItem(icon: "🥈", amount: "\(resources.silver)")
+            ResourceItem(icon: "🛢️", amount: "\(resources.oil)")
         }
     }
 

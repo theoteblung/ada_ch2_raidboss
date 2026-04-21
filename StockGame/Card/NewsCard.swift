@@ -27,9 +27,9 @@ struct NewsCard: View {
                 .lineLimit(2)
             
             HStack(spacing: 6) {
-                ForEach(item.effects, id: \.type) { effect in
+                ForEach(item.effects, id: \.category) { effect in
                     Label {
-                        Text("\(effect.type.rawValue.capitalized) \(effect.direction == .up ? "↑" : "↓") \(Int(effect.magnitude * 100))%")
+                        Text("\(effect.category.rawValue.capitalized) \(effect.direction == .up ? "↑" : "↓") \(Int(effect.magnitude * 100))%")
                             .font(.caption2.bold())
                     } icon: {
                         Circle()
@@ -55,7 +55,7 @@ struct NewsCard: View {
                 description: "Apple Inc. Q2 2024 Earnings: Analyst Upgrades, Revenue Beats Estimates",
                 effects: [
                     NewsEffect
-                        .init(type: .stocks, direction: .up, magnitude: 0.05)
+                        .init(category: .technology, direction: .up, magnitude: 0.05)
                 ]
             )
     )
