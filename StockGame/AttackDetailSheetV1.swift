@@ -14,11 +14,6 @@ struct AttackDetailSheetV1: View {
     let resources: GameResources
     
     
-    
-    @State private var stockDetail: Stock = SeedData.stocks[0]
-    @State private var goldInfo: Commodity = SeedData.commodities[0]
-    @State private var silverInfo: Commodity = SeedData.commodities[1]
-    @State private var oilInfo: Commodity = SeedData.commodities[2]
     @State private var selectedRaidAttackID: UUID? = nil
     @State private var selectedRaidInfo: RaidAttack? = nil
     
@@ -27,8 +22,8 @@ struct AttackDetailSheetV1: View {
         RaidAttack(name: "Supply Sabotage", dollars: 0, gold: 3, silver: 0, oil: 10, icon: "airplane"),
         RaidAttack(name: "Hostile Buyout", dollars: 10000, gold: 0, silver: 0, oil: 0, icon: "dollarsign.circle"),
     ]
-    
     var body: some View {
+    
         NavigationView {
             ZStack {
                 Color(uiColor: .secondarySystemBackground).ignoresSafeArea()
@@ -37,16 +32,17 @@ struct AttackDetailSheetV1: View {
                     VStack(spacing: 25) {
                         // Header & Price
                         VStack(spacing: 8) {
-                            Image("\(stockDetail.symbol.lowercased())")
+                            Image("\(selectedStock.symbol.lowercased())")
                                 .resizable()
                                 .frame(width: 100, height: 100)
                                 .font(.system(size: 60))
                                 .padding()
                             
-                            Text("$\(stockDetail.priceHistory.last!.price, specifier: "%.2f")")
+                            Text("$\(selectedStock.priceHistory.last!.price, specifier: "%.2f")")
                                 .font(.system(size: 44, weight: .bold, design: .rounded))
                             
-                            Text("+123(+1.21%)")
+                            
+                            Text("\(String(format: "%.2f", selectedStock.change))(\(String(format: "%.2f", selectedStock.changePercentage))%)")
                                 .foregroundColor(.green)
                                 .font(.headline)
                         }
@@ -59,19 +55,19 @@ struct AttackDetailSheetV1: View {
 //                            CandleStickView()
 //                                .frame(height: 200)
                             Chart {
-                                ForEach(stockDetail.priceHistory, id: \.date) { item in
+                                ForEach(selectedStock.priceHistory, id: \.date) { item in
                                     AreaMark(x: .value("Date", item.date), y: .value("Price", item.price))
                                         .foregroundStyle(
-                                            LinearGradient(gradient: .init(colors: [stockDetail.statusColor.opacity(0.5), .clear]), startPoint: .top, endPoint:
+                                            LinearGradient(gradient: .init(colors: [selectedStock.statusColor.opacity(0.5), .clear]), startPoint: .top, endPoint:
                                                     .bottom)
                                         )
                                     LineMark(x: .value("Date", item.date), y: .value("Price", item.price))
-                                        .foregroundStyle(stockDetail.statusColor)
+                                        .foregroundStyle(selectedStock.statusColor)
                                     RuleMark(
                                         y: .value("Threshold", 200)
                                     )
                                     .lineStyle(StrokeStyle(lineWidth: 2, dash : [10,5]))
-                                    .foregroundStyle(stockDetail.statusColor)
+                                    .foregroundStyle(selectedStock.statusColor)
                                 }
                             }
                             .frame(height: 150)
@@ -85,7 +81,7 @@ struct AttackDetailSheetV1: View {
                         // Details Section
                         VStack(alignment: .leading, spacing: 12) {
                             DetailRow(label: "Specialty", value: "Mac, Apple Watch, Iphone")
-                            DetailRow(label: "Potential Reward", value: "100 \(stockDetail.symbol) Shares")
+                            DetailRow(label: "Potential Reward", value: "100 \(selectedStock.symbol) Shares")
                         }
                         .padding()
                         .background(Color(uiColor: .tertiarySystemBackground))
@@ -128,6 +124,7 @@ struct AttackDetailSheetV1: View {
                                 } else {
                                     Text("Return: -")
                                 }
+                                Text("\(Image(systemName: "exclamationmark.triangle"))Notice: If you don't have required commodities, you will buy them directly at market prices.").font(.subheadline).foregroundColor(Color(.secondaryLabel))
                             }
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -136,7 +133,7 @@ struct AttackDetailSheetV1: View {
                         }
                         
                         Button(action: {
-                            isShowSheet.toggle()
+                            launchRaid()
                         }) {
                             Text("Launch Operation")
                                 .font(.headline)
@@ -150,25 +147,32 @@ struct AttackDetailSheetV1: View {
                     .padding()
                 }
             }
-            .navigationTitle("\(stockDetail.symbol) Operation Detail")
+            .navigationTitle("\(selectedStock.symbol) Operation Detail")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("X") {
+                        isShowSheet.toggle()
+                    }
+                }
+            }
             
         }
     }
     
     func getExpectedReturn() -> Double {
         var expectedReturn: Double = 0.0
-        if (selectedRaidInfo != nil && goldInfo.priceHistory.count > 0 && silverInfo.priceHistory.count > 0 && oilInfo.priceHistory.count > 0) {
+        if (selectedRaidInfo != nil && goldInfo().priceHistory.count > 0 && silverInfo().priceHistory.count > 0 && oilInfo().priceHistory.count > 0) {
             if (selectedRaidInfo!.gold > 0) {
-                expectedReturn += Double(selectedRaidInfo!.gold) * goldInfo.priceHistory.last!.price
+                expectedReturn += Double(selectedRaidInfo!.gold) * goldInfo().priceHistory.last!.price
             }
             if (selectedRaidInfo!.silver > 0) {
-                expectedReturn += Double(selectedRaidInfo!.silver) * silverInfo.priceHistory.last!.price
+                expectedReturn += Double(selectedRaidInfo!.silver) * silverInfo().priceHistory.last!.price
             }
             if (selectedRaidInfo!.oil > 0) {
-                expectedReturn += Double(selectedRaidInfo!.oil) * oilInfo.priceHistory.last!.price
+                expectedReturn += Double(selectedRaidInfo!.oil) * oilInfo().priceHistory.last!.price
             }
-            let expectedReward = 100 * stockDetail.priceHistory.last!.price
+            let expectedReward = 100 * selectedStock.priceHistory.last!.price
             expectedReturn -= expectedReward
         }
         
@@ -196,6 +200,38 @@ struct AttackDetailSheetV1: View {
             return .gray
         }
     }
+    func goldInfo() -> Commodity {
+        return commodities[0]
+    }
+    func silverInfo() -> Commodity {
+        return commodities[1]
+    }
+    func oilInfo() -> Commodity {
+        return commodities[2]
+    }
+    func launchRaid() {
+        if (selectedRaidInfo != nil) {
+            resources.gold -= Int(selectedRaidInfo!.gold)
+            resources.silver -= Int(selectedRaidInfo!.silver)
+            resources.oil -= Int(selectedRaidInfo!.oil)
+            resources.dollars -= Double(selectedRaidInfo!.dollars)
+            
+            //calculate minus to buyout from current market price
+            if (resources.gold < 0) {
+                resources.dollars += Double(resources.gold) * goldInfo().priceHistory.last!.price
+                resources.gold = 0
+            }
+            if (resources.silver < 0) {
+                resources.dollars += Double(resources.silver) * silverInfo().priceHistory.last!.price
+                resources.silver = 0
+            }
+            if (resources.oil < 0) {
+                resources.dollars += Double(resources.gold) * oilInfo().priceHistory.last!.price
+                resources.oil = 0
+            }
+            isShowSheet.toggle()
+        }
+    }
 }
 
 struct DetailRow: View {
@@ -213,7 +249,7 @@ struct DetailRow: View {
 
 
 #Preview {
-//    AttackDetailSheetV1()
+    AttackDetailSheetV1(isShowSheet: .constant(true), selectedStock: SeedData.stocks[0], commodities: SeedData.commodities, resources: GameResources())
 }
 //pass resource as a binding result
 // when launch operation, apply confirmation dialog

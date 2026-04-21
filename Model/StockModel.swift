@@ -36,6 +36,10 @@ struct Stock: Item {
     var change: Double {
         lastPrice - (priceHistory[0].price)
     }
+    
+    var changePercentage: Double {
+        ((lastPrice - (priceHistory[0].price)) / (priceHistory[0].price)) * 100
+    }
 
     var lastPrice: Double {
         priceHistory.last?.price ?? 0.0
