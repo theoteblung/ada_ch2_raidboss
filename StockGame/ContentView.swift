@@ -34,7 +34,18 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            news.startRotation()
+            Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    news.transition = false
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    news.currentIndex = (news.currentIndex + 1) % news.items.count
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        news.transition = true
+                    }
+                }
+            }
+
         }
         .onChange(of: news.currentIndex) {
             applyCurrentNewsEffectsIfNeeded()
