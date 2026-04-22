@@ -13,9 +13,9 @@ struct StockGameApp: App {
     @State private var stocks: [Stock] = SeedData.stocks
     @State private var commodities: [Commodity] = SeedData.commodities
     
-    @State private var news = NewsStore(items: SeedData.newsItems)
-    @State private var gameTime = GameTime()
-    @State private var resources = GameResources()
+    let news = NewsStore(items: SeedData.newsItems)
+    let gameTime = GameTime()
+    let resources = GameResources()
 
     var body: some Scene {
         WindowGroup {

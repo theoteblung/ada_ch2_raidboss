@@ -25,7 +25,20 @@ protocol Item: Identifiable {
     var name: String { get }
     
     var category: ItemCategory { get }
-    var priceHistory: [PriceHistory] { get }
+    var priceHistory: [PriceHistory] { get set }
+}
+
+extension Item {
+    var lastPrice: Double {
+        priceHistory.last?.price ?? 0.0
+    }
+    var change: Double {
+        lastPrice - (priceHistory.first?.price ?? 0.0)
+    }
+    var statusColor: Color {
+        guard priceHistory.count >= 2 else { return .gray }
+        return lastPrice > priceHistory.first!.price ? .green : .red
+    }
 }
 
 // Model for our stock app
@@ -36,19 +49,6 @@ struct Stock: Item {
     
     var category: ItemCategory
     var priceHistory: [PriceHistory]
-
-    var change: Double {
-        lastPrice - (priceHistory[0].price)
-    }
-
-    var lastPrice: Double {
-        priceHistory.last?.price ?? 0.0
-    }
-
-    var statusColor: Color {
-        guard priceHistory.count >= 2 else { return .gray }
-        return lastPrice > priceHistory[0].price ? .green : .red
-    }
 }
 
 struct Commodity: Item {
@@ -57,17 +57,20 @@ struct Commodity: Item {
     
     var category: ItemCategory
     var priceHistory: [PriceHistory]
+}
 
-    var change: Double {
-        lastPrice - (priceHistory[0].price)
+struct OwnedStock: Identifiable, Equatable {
+    static func == (lhs: OwnedStock, rhs: OwnedStock) -> Bool {
+        lhs.stock.symbol == rhs.stock.symbol
     }
-
-    var lastPrice: Double {
-        priceHistory.last?.price ?? 0.0
-    }
-
-    var statusColor: Color {
-        guard priceHistory.count >= 2 else { return .gray }
-        return lastPrice > priceHistory[0].price ? .green : .red
+    
+    let id: UUID = UUID()
+    
+    let stock: Stock
+    let quantity: Int
+    
+    init(stock: Stock, quantity: Int) {
+        self.stock = stock
+        self.quantity = quantity
     }
 }

@@ -36,4 +36,36 @@ final class GameResources {
     var gold: Int = 0
     var silver: Int = 0
     var oil: Int = 0
+    
+    var ownedStocks: [OwnedStock] = []
+    
+    func add(ownedStock: OwnedStock) {
+        ownedStocks.append(ownedStock)
+    }
+    
+    func remove(ownedStock: OwnedStock) {
+        ownedStocks.removeAll { $0.id == ownedStock.id }
+    }
+    
+    func update(ownedStock: OwnedStock) {
+        if let index = ownedStocks.firstIndex(of: ownedStock) {
+            ownedStocks[index] = ownedStock
+        }
+    }
+    
+    func addGold(_ amount: Int) {
+        gold += amount
+    }
+    
+    func addSilver(_ amount: Int) {
+        silver += amount
+    }
+    
+    func addOil(_ amount: Int) {
+        oil += amount
+    }
+    
+    func addDollars(_ amount: Double) {
+        dollars += amount
+    }
 }
