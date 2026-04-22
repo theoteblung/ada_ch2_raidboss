@@ -9,7 +9,7 @@ import Charts
 // MARK: - Detailed Sheet (Page 2)
 struct RaidDetail: View {
     @Environment(\.dismiss) private var dismiss
-    @State var selectedStock: any Item
+    @State var selectedStock: Stock
     @State var commodities: [Commodity]
     let resources: GameResources
     let totalReward: Int = 100
