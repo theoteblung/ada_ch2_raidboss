@@ -99,7 +99,7 @@ struct InventoryView: View {
             .sheet(item: $selectedStock, onDismiss: {
                 
             }) { selected in
-                AttackDetailSheetV1(selectedStock: selected, commodities: commodities, resources: resources)
+                RaidDetail(selectedStock: selected, commodities: commodities, resources: resources)
             }
             .preferredColorScheme(.dark)
             
