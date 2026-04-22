@@ -90,7 +90,7 @@ struct OwnedStock: Identifiable, Equatable {
     let id: UUID = UUID()
     
     let stock: Stock
-    let quantity: Int
+    var quantity: Int
     
     init(stock: Stock, quantity: Int) {
         self.stock = stock

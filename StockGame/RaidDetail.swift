@@ -12,6 +12,7 @@ struct RaidDetail: View {
     @State var selectedStock: Stock
     @State var commodities: [Commodity]
     let resources: GameResources
+    let totalReward: Int = 100
     
     @State var selectedRaidAttack: RaidAttack?
     
@@ -127,7 +128,7 @@ struct RaidDetail: View {
             if (selectedRaidAttack!.oil > 0) {
                 expectedReturn += Double(selectedRaidAttack!.oil) * oilInfo().priceHistory.last!.price
             }
-            let expectedReward = 100 * selectedStock.priceHistory.last!.price
+            let expectedReward = Double(totalReward) * selectedStock.priceHistory.last!.price
             expectedReturn -= expectedReward
         }
         
@@ -166,25 +167,48 @@ struct RaidDetail: View {
     }
     func launchRaid() {
         if (selectedRaidAttack != nil) {
-            resources.gold -= Int(selectedRaidAttack!.gold)
-            resources.silver -= Int(selectedRaidAttack!.silver)
-            resources.oil -= Int(selectedRaidAttack!.oil)
-            resources.dollars -= Double(selectedRaidAttack!.dollars)
+            // calculate expected inventory
+            var gold_qty = resources.gold - Int(selectedRaidAttack!.gold)
+            var silver_qty = resources.silver - Int(selectedRaidAttack!.silver)
+            var oil_qty = resources.oil - Int(selectedRaidAttack!.oil)
+            var dollars_qty = resources.dollars - Double(selectedRaidAttack!.dollars)
             
             //calculate minus to buyout from current market price
-            if (resources.gold < 0) {
-                resources.dollars += Double(resources.gold) * goldInfo().priceHistory.last!.price
-                resources.gold = 0
+            if (gold_qty < 0) {
+                dollars_qty += Double(gold_qty) * goldInfo().priceHistory.last!.price
+                gold_qty = 0
             }
-            if (resources.silver < 0) {
-                resources.dollars += Double(resources.silver) * silverInfo().priceHistory.last!.price
-                resources.silver = 0
+            if (silver_qty < 0) {
+                dollars_qty += Double(silver_qty) * silverInfo().priceHistory.last!.price
+                silver_qty = 0
             }
-            if (resources.oil < 0) {
-                resources.dollars += Double(resources.gold) * oilInfo().priceHistory.last!.price
-                resources.oil = 0
+            if (oil_qty < 0) {
+                dollars_qty += Double(oil_qty) * oilInfo().priceHistory.last!.price
+                oil_qty = 0
             }
-            dismiss()
+            if (dollars_qty > 0) {
+                if (gold_qty != resources.gold) {
+                    resources.updateGold(gold_qty)
+                }
+                if (silver_qty != resources.silver) {
+                    resources.updateSilver(silver_qty)
+                }
+                if (oil_qty != resources.oil) {
+                    resources.updateOil(oil_qty)
+                }
+                if (dollars_qty != resources.dollars) {
+                    resources.updateDollars(dollars_qty)
+                }
+                var earnedStock: OwnedStock = OwnedStock(stock: selectedStock, quantity: totalReward)
+                resources.addOrUpdate(ownedStock: earnedStock)
+                
+                dismiss()
+            }else {
+                //placeholder for notification lack of resources
+            }
+            
+        }else {
+            //placeholder for selecting raid method
         }
     }
 }
