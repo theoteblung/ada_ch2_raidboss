@@ -18,6 +18,7 @@ struct ContentView: View {
     let news: NewsStore
     let gameTime: GameTime
     let resources: GameResources
+    let newsInterval = 10.0
     
     var body: some View {
         VStack(spacing: 0) {
@@ -34,7 +35,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
+            Timer.scheduledTimer(withTimeInterval: newsInterval, repeats: true) { _ in
                 withAnimation(.easeInOut(duration: 0.5)) {
                     news.transition = false
                 }
