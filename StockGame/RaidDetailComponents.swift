@@ -61,7 +61,23 @@ struct RaidDetailChart: View {
 }
 
 struct RaidDetailMethod: View {
+    let raidAttack: RaidAttack
+    @Binding var selectedRaidAttack: RaidAttack?
     var body: some View {
+        Button {
+            selectedRaidAttack = raidAttack
+        } label: {
+            VStack {
+                Image(systemName: raidAttack.icon)
+                Text(raidAttack.name.split(separator: " ").last ?? "")
+                    .font(.caption2)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(selectedRaidAttack?.id == raidAttack.id ? Color.blue : Color.gray.opacity(0.2))
+            .foregroundColor(selectedRaidAttack?.id == raidAttack.id ? .white : .primary)
+            .cornerRadius(10)
+        }
         
     }
 }

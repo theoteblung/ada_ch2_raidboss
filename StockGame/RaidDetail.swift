@@ -13,9 +13,7 @@ struct RaidDetail: View {
     @State var commodities: [Commodity]
     let resources: GameResources
     
-    
-    @State private var selectedRaidAttackID: UUID? = nil
-    @State private var selectedRaidInfo: RaidAttack? = nil
+    @State var selectedRaidAttack: RaidAttack?
     
     var raidAttacks: [RaidAttack] = [
         RaidAttack(name: "Digital Intel", dollars: 0, gold: 1, silver: 10, oil: 0, icon: "laptopcomputer"),
@@ -65,30 +63,16 @@ struct RaidDetail: View {
                             
                             HStack(spacing: 10) {
                                 ForEach(raidAttacks) { raidAttack in
-                                    Button {
-                                        selectedRaidAttackID = raidAttack.id
-                                        selectedRaidInfo = raidAttack
-                                    } label: {
-                                        VStack {
-                                            Image(systemName: raidAttack.icon)
-                                            Text(raidAttack.name.split(separator: " ").last ?? "")
-                                                .font(.caption2)
-                                        }
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 12)
-                                        .background(selectedRaidAttackID == raidAttack.id ? Color.blue : Color.gray.opacity(0.2))
-                                        .foregroundColor(selectedRaidAttackID == raidAttack.id ? .white : .primary)
-                                        .cornerRadius(10)
-                                    }
+                                    RaidDetailMethod(raidAttack: raidAttack, selectedRaidAttack: $selectedRaidAttack)
                                 }
                             }
                             
                             // Efficiency Comparison
                             VStack(alignment: .leading, spacing: 5) {
-                                Text("Cost: \(selectedRaidInfo?.costDescription ?? "-")")
+                                Text("Cost: \(selectedRaidAttack?.costDescription ?? "-")")
                                     .font(.callout.bold())
                                     .foregroundColor(.orange)
-                                if selectedRaidInfo != nil {
+                                if selectedRaidAttack != nil {
                                     Text("Return: \(getExpectedReturnDisplay())")
                                         .font(.callout.bold())
                                         .foregroundColor(getExpectedReturnColor())
@@ -133,15 +117,15 @@ struct RaidDetail: View {
     
     func getExpectedReturn() -> Double {
         var expectedReturn: Double = 0.0
-        if (selectedRaidInfo != nil && goldInfo().priceHistory.count > 0 && silverInfo().priceHistory.count > 0 && oilInfo().priceHistory.count > 0) {
-            if (selectedRaidInfo!.gold > 0) {
-                expectedReturn += Double(selectedRaidInfo!.gold) * goldInfo().priceHistory.last!.price
+        if (selectedRaidAttack != nil && goldInfo().priceHistory.count > 0 && silverInfo().priceHistory.count > 0 && oilInfo().priceHistory.count > 0) {
+            if (selectedRaidAttack!.gold > 0) {
+                expectedReturn += Double(selectedRaidAttack!.gold) * goldInfo().priceHistory.last!.price
             }
-            if (selectedRaidInfo!.silver > 0) {
-                expectedReturn += Double(selectedRaidInfo!.silver) * silverInfo().priceHistory.last!.price
+            if (selectedRaidAttack!.silver > 0) {
+                expectedReturn += Double(selectedRaidAttack!.silver) * silverInfo().priceHistory.last!.price
             }
-            if (selectedRaidInfo!.oil > 0) {
-                expectedReturn += Double(selectedRaidInfo!.oil) * oilInfo().priceHistory.last!.price
+            if (selectedRaidAttack!.oil > 0) {
+                expectedReturn += Double(selectedRaidAttack!.oil) * oilInfo().priceHistory.last!.price
             }
             let expectedReward = 100 * selectedStock.priceHistory.last!.price
             expectedReturn -= expectedReward
@@ -181,11 +165,11 @@ struct RaidDetail: View {
         return commodities[2]
     }
     func launchRaid() {
-        if (selectedRaidInfo != nil) {
-            resources.gold -= Int(selectedRaidInfo!.gold)
-            resources.silver -= Int(selectedRaidInfo!.silver)
-            resources.oil -= Int(selectedRaidInfo!.oil)
-            resources.dollars -= Double(selectedRaidInfo!.dollars)
+        if (selectedRaidAttack != nil) {
+            resources.gold -= Int(selectedRaidAttack!.gold)
+            resources.silver -= Int(selectedRaidAttack!.silver)
+            resources.oil -= Int(selectedRaidAttack!.oil)
+            resources.dollars -= Double(selectedRaidAttack!.dollars)
             
             //calculate minus to buyout from current market price
             if (resources.gold < 0) {
