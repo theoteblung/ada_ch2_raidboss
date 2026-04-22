@@ -18,6 +18,20 @@ struct InventoryView: View {
     @State var selectedType: ItemType = .commodities
     
     @State private var selectedStock: Stock?
+    @State private var selectedCommodity: Commodity?
+    
+    enum SelectedSheet: Identifiable {
+        case stock(Stock)
+        case commodity(Commodity) // e.g., a setting title
+
+        var id: UUID {
+            switch self {
+            case .stock(let stock): return stock.id
+            case .commodity(let commodity): return commodity.id
+            }
+        }
+    }
+    @State private var selectedSheet: SelectedSheet?
     
     private let newsTransitionTime: TimeInterval = 4 * 2 // in seconds
     
@@ -57,6 +71,10 @@ struct InventoryView: View {
                         ForEach(shownList, id: \.id) { commodity in
                             Group {
                                 CommodityCard(commodity: commodity)
+                                    .onTapGesture {
+                                        selectedCommodity = commodity
+                                        selectedSheet = .commodity(commodity)
+                                    }
                             }
                         }
                         .onMove { from, to in
@@ -72,7 +90,7 @@ struct InventoryView: View {
                             Group {
                                 StocksCard(stock: stock.stock, total: stock.quantity)
                                     .onTapGesture {
-                                        selectedStock = stock.stock
+                                        selectedSheet = .stock(stock.stock)
                                     }
                             }
                             .swipeActions {
@@ -96,10 +114,17 @@ struct InventoryView: View {
                 .listStyle(.plain)
             }
             .toolbarView(gameTime: gameTime, resources: resources)
-            .sheet(item: $selectedStock, onDismiss: {
+            .sheet(item: $selectedSheet, onDismiss: {
                 
             }) { selected in
-                RaidDetail(selectedStock: selected, commodities: commodities, resources: resources)
+                switch selected {
+                    case .stock(let selectedStock):
+                        StockInventoryDetail(selectedStock: selectedStock, resources: resources)
+                        
+                    case .commodity(let selectedCommodity):
+                        CommodityInventoryDetail(selectedCommodity: selectedCommodity, resources: resources)
+                }
+//                InventoryDetail(selectedStock: $selectedStock, selectedCommodity: $selectedCommodity, resources: resources)
             }
             .preferredColorScheme(.dark)
             
