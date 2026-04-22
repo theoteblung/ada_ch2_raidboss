@@ -9,9 +9,10 @@ import SwiftUI
 import Charts
 
 struct StocksCard: View {
-
+    
     var stock: Stock
-
+    var total: Int?
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -23,6 +24,7 @@ struct StocksCard: View {
                     .foregroundStyle(.gray)
             }.frame(width: 100, alignment: .leading)
             Spacer()
+            
             //chart
             Chart {
                 ForEach(stock.priceHistory, id: \.date) { item in
@@ -43,24 +45,46 @@ struct StocksCard: View {
             .frame(width: 100, height: 50)
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
-            VStack(alignment: .trailing) {
-                Text("\(stock.lastPrice, specifier: "%.2f")")
-                Button {
-
-                } label: {
-                    Text("\(stock.change, specifier: "%.2f")").foregroundStyle(.white)
+            
+            if total != nil {
+                VStack(alignment: .trailing) {
+                    Text("Total")
+                    
+                    Text("\(total!)").foregroundStyle(.white)
                         .font(.system(size: 14, weight: .bold))
                         .padding(.horizontal, 4)
-
+                        .frame(width: 60, alignment: .trailing)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(stock.statusColor)
+                        )
+                    
                 }
-
-                .frame(width: 60, alignment: .trailing)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(stock.statusColor)
-                )
-
+            } else {
+                VStack(alignment: .trailing) {
+                    Text("\(stock.lastPrice, specifier: "%.2f")")
+                    Button {
+                        
+                    } label: {
+                        Text("\(stock.change, specifier: "%.2f")").foregroundStyle(.white)
+                            .font(.system(size: 14, weight: .bold))
+                            .padding(.horizontal, 4)
+                        
+                    }
+                    
+                    .frame(width: 60, alignment: .trailing)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(stock.statusColor)
+                    )
+                }
             }
         }
     }
+}
+
+#Preview {
+    let stock = SeedData.stocks.randomElement()!
+    
+    StocksCard(stock: stock, total: 100)
 }

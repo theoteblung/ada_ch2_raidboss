@@ -62,3 +62,13 @@ struct CommodityCard: View {
         }
     }
 }
+
+#Preview {
+    let commodity = Commodity.init(
+        name: "Oil",
+        category: .energy,
+        priceHistory: []
+    )
+    
+    CommodityCard(commodity: commodity)
+}

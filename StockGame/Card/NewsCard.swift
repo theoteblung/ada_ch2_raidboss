@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NewsCard: View {
     var item: NewsItem
+    var transition: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -44,11 +45,14 @@ struct NewsCard: View {
         }
         .padding()
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .offset(y: transition ? 0 : -10)
+        .opacity(transition ? 1 : 0)
     }
 }
 
 #Preview {
-    NewsCard(item:
+    NewsCard(
+        item:
             .init(
                 title: "Apple Inc. Q2 2024 Earnings: Analyst Upgrades, Revenue Beats Estimates",
                 date: Date(),
@@ -57,6 +61,7 @@ struct NewsCard: View {
                     NewsEffect
                         .init(category: .technology, direction: .up, magnitude: 0.05)
                 ]
-            )
+            ),
+        transition: true,
     )
 }
