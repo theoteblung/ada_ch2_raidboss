@@ -17,8 +17,6 @@ struct InventoryView: View {
     
     @State var selectedType: ItemType = .commodities
     
-    @State private var selectedStock: Stock?
-    @State private var selectedCommodity: Commodity?
     
     enum SelectedSheet: Identifiable {
         case stock(Stock)
@@ -72,7 +70,6 @@ struct InventoryView: View {
                             Group {
                                 CommodityCard(commodity: commodity)
                                     .onTapGesture {
-                                        selectedCommodity = commodity
                                         selectedSheet = .commodity(commodity)
                                     }
                             }
