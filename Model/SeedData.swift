@@ -91,6 +91,7 @@ enum SeedData {
         [
             Commodity(
                 name: "Gold",
+                symbol: "GLD",
                 category: .mining,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 195),
@@ -102,6 +103,7 @@ enum SeedData {
             ),
             Commodity(
                 name: "Silver",
+                symbol: "SLV",
                 category: .mining,
                 priceHistory: [
                     .init(date: Date(), price: 60),
@@ -109,6 +111,7 @@ enum SeedData {
             ),
             Commodity(
                 name: "Oil",
+                symbol: "OIL",
                 category: .energy,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 100),

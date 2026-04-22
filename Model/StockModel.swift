@@ -23,6 +23,7 @@ struct PriceHistory {
 protocol Item: Identifiable {
     var id: UUID { get }
     var name: String { get }
+    var symbol: String { get }
     
     var category: ItemCategory { get }
     var priceHistory: [PriceHistory] { get set }
@@ -77,6 +78,7 @@ struct Stock: Item {
 struct Commodity: Item {
     let id = UUID()
     var name: String
+    var symbol: String
     
     var category: ItemCategory
     var priceHistory: [PriceHistory]

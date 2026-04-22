@@ -1,15 +1,16 @@
 //
-//  AttackDetailSheetV1.swift
+//  InventoryDetail.swift
 //  StockGame
 //
-//  Created by Christofer Theodore on 21/04/26.
+//  Created by Christofer Theodore on 22/04/26.
 //
+
 import SwiftUI
 import Charts
 // MARK: - Detailed Sheet (Page 2)
-struct RaidDetail: View {
+struct InventoryDetail: View {
     @Environment(\.dismiss) private var dismiss
-    @State var selectedStock: any Item
+    @State var selectedStock: Stock
     @State var commodities: [Commodity]
     let resources: GameResources
     let totalReward: Int = 100
@@ -103,7 +104,7 @@ struct RaidDetail: View {
                     .padding()
                 }
             }
-            .navigationTitle("\(selectedStock.symbol) Operation Detail")
+            .navigationTitle("\(selectedStock.symbol) Inventory Detail")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
