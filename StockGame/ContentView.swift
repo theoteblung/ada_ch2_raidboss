@@ -67,7 +67,19 @@ struct ContentView: View {
         }
     }
     
-    private func applyEffects<T: Item>(_ effects: [NewsEffect], to item: T) -> T {
+    private func applyEffects(_ effects: [NewsEffect], to item: Stock) -> Stock {
+        guard let updatedPrice = updatedPrice(from: item.lastPrice, category: item.category, effects: effects) else {
+            return item
+        }
+        
+        var updatedItem = item
+        updatedItem.priceHistory.append(
+            PriceHistory(date: gameTime.currentDate(at: Date()), price: updatedPrice)
+        )
+        return updatedItem
+    }
+    
+    private func applyEffects(_ effects: [NewsEffect], to item: Commodity) -> Commodity {
         guard let updatedPrice = updatedPrice(from: item.lastPrice, category: item.category, effects: effects) else {
             return item
         }

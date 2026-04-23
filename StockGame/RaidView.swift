@@ -11,11 +11,12 @@ struct RaidView: View {
     @Binding var stocks: [Stock]
     @Binding var commodities: [Commodity]
     
-    let news: NewsStore
+    @State var news: NewsStore
     let gameTime: GameTime
     let resources: GameResources
+    @State var isPresented: Bool = false
     
-    @State private var selectedStock: Stock?
+    @State private var selectedStock: Int = 0
     
     private let newsTransitionTime: TimeInterval = 4 * 2 // in seconds
     
@@ -29,12 +30,19 @@ struct RaidView: View {
                         NewsCard(item: news.items[news.currentIndex], transition: news.transition)
                     }
                     
-                    let shownList = stocks
-                    
-                    ForEach(shownList, id: \.id) { item in
-                        StocksCard(stock: item)
+                    ForEach(stocks.indices, id: \.self) { index in
+                        StocksCard(stock: stocks[index])
                             .onTapGesture {
-                                selectedStock = item
+                                selectedStock = index
+                                Task {
+                                    // Delay for 100 milliseconds
+                                    try? await Task.sleep(for: .milliseconds(100))
+                                    
+                                    // Code to execute after delay
+                                    print("100ms passed")
+                                    isPresented = true
+                                }
+                                
                             }
                     }
                     .onMove { from, to in
@@ -46,10 +54,8 @@ struct RaidView: View {
                 
             }
             .toolbarView(gameTime: gameTime, resources: resources)
-            .sheet(item: $selectedStock, onDismiss: {
-                
-            }) { selected in
-                RaidDetail(selectedStock: selected, commodities: commodities, resources: resources)
+            .sheet(isPresented: $isPresented) {
+                RaidDetail(selectedStock: $stocks[selectedStock], commodities: commodities, resources: resources)
             }
             .preferredColorScheme(.dark)
             

@@ -74,8 +74,8 @@ struct RaidDetailMethod: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(selectedRaidAttack?.id == raidAttack.id ? Color.blue : Color.gray.opacity(0.2))
-            .foregroundColor(selectedRaidAttack?.id == raidAttack.id ? .white : .primary)
+            .background(selectedRaidAttack?.name == raidAttack.name ? Color.blue : Color.gray.opacity(0.2))
+            .foregroundColor(selectedRaidAttack?.name == raidAttack.name ? .white : .primary)
             .cornerRadius(10)
         }
         

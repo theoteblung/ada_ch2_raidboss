@@ -50,6 +50,8 @@ struct Stock: Item {
     
     var category: ItemCategory
     var priceHistory: [PriceHistory]
+    
+    var selectedRaidAttack: RaidAttack?
 
     var change: Double {
         lastPrice - (priceHistory[0].price)
