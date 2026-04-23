@@ -82,6 +82,20 @@ struct Commodity: Item {
     
     var category: ItemCategory
     var priceHistory: [PriceHistory]
+    
+    var change: Double {
+        lastPrice - (priceHistory[0].price)
+    }
+    
+    var changePercentage: Double {
+        ((lastPrice - (priceHistory[0].price)) / (priceHistory[0].price)) * 100
+    }
+    
+    var avgPrice: Double {
+        let totalSum = priceHistory.reduce(0.0) { $0 + $1.price }
+        let averagePrice = totalSum / Double(priceHistory.count)
+        return averagePrice
+    }
 }
 
 struct OwnedStock: Identifiable, Equatable {

@@ -19,7 +19,7 @@ struct InventoryView: View {
     
     
     enum SelectedSheet: Identifiable {
-        case stock(Stock)
+        case stock(OwnedStock)
         case commodity(Commodity) // e.g., a setting title
 
         var id: UUID {
@@ -87,7 +87,7 @@ struct InventoryView: View {
                             Group {
                                 StocksCard(stock: stock.stock, total: stock.quantity)
                                     .onTapGesture {
-                                        selectedSheet = .stock(stock.stock)
+                                        selectedSheet = .stock(stock)
                                     }
                             }
                             .swipeActions {
