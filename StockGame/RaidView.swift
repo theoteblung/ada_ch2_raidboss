@@ -34,14 +34,6 @@ struct RaidView: View {
                         StocksCard(stock: stocks[index])
                             .onTapGesture {
                                 selectedStock = stocks[index]
-                                Task {
-                                    // Delay for 100 milliseconds
-                                    try? await Task.sleep(for: .milliseconds(100))
-                                    
-                                    // Code to execute after delay
-                                    print("100ms passed")
-                                    isPresented = true
-                                }
                                 
                             }
                     }
@@ -59,7 +51,7 @@ struct RaidView: View {
 //            }
             .sheet(item: $selectedStock) { selected in
                 if let index = stocks.firstIndex(where: { $0.id == selected.id }) {
-                    RaidDetail(selectedStock: $stocks[index], commodities: commodities, resources: resources)
+                    RaidDetail(selectedStock: $stocks[index], commodities: $commodities, resources: resources)
                 }
                 
             }

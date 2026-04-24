@@ -19,12 +19,12 @@ struct InventoryView: View {
     
     
     enum SelectedSheet: Identifiable {
-        case stock(OwnedStock)
+        case ownedStock(OwnedStock)
         case commodity(Commodity) // e.g., a setting title
 
         var id: UUID {
             switch self {
-            case .stock(let stock): return stock.id
+            case .ownedStock(let ownedStock): return ownedStock.id
             case .commodity(let commodity): return commodity.id
             }
         }
@@ -83,16 +83,16 @@ struct InventoryView: View {
                         }
                     case .stocks:
                         let shownList: [OwnedStock] = resources.ownedStocks
-                        ForEach(shownList, id: \.id) { stock in
+                        ForEach(shownList, id: \.id) { ownedStock in
                             Group {
-                                StocksCard(stock: stock.stock, total: stock.quantity)
+                                StocksCard(stock: ownedStock.stock, total: ownedStock.quantity)
                                     .onTapGesture {
-                                        selectedSheet = .stock(stock)
+                                        selectedSheet = .ownedStock(ownedStock)
                                     }
                             }
                             .swipeActions {
                                 Button(role: .destructive) {
-                                    resources.remove(ownedStock: stock)
+                                    resources.remove(ownedStock: ownedStock)
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
@@ -115,11 +115,17 @@ struct InventoryView: View {
                 
             }) { selected in
                 switch selected {
-                    case .stock(let selectedStock):
-                        StockInventoryDetail(selectedStock: selectedStock, resources: resources)
+                    case .ownedStock(let selectedOwnedStock):
+//                        StockInventoryDetail(selectedStock: selectedOwnedStock, resources: resources)
+                        if let index = stocks.firstIndex(where: { $0.id == selectedOwnedStock.stock.id }) {
+                            StockInventoryDetail(selectedStock: $stocks[index], selectedStockQty: selectedOwnedStock.quantity, resources: resources)
+                        }
                         
                     case .commodity(let selectedCommodity):
-                        CommodityInventoryDetail(selectedCommodity: selectedCommodity, resources: resources)
+//                        CommodityInventoryDetail(selectedCommodity: selectedCommodity, resources: resources)
+                        if let index = commodities.firstIndex(where: { $0.id == selectedCommodity.id }) {
+                            CommodityInventoryDetail(selectedCommodity: $commodities[index], resources: resources)
+                        }
                 }
 //                InventoryDetail(selectedStock: $selectedStock, selectedCommodity: $selectedCommodity, resources: resources)
             }

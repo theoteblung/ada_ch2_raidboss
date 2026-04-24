@@ -10,7 +10,7 @@ import Charts
 struct RaidDetail: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var selectedStock: Stock
-    @State var commodities: [Commodity]
+    @Binding var commodities: [Commodity]
     let resources: GameResources
     let totalReward: Int = 100
     
@@ -115,16 +115,16 @@ struct RaidDetail: View {
         var expectedReturn: Double = 0.0
         if (selectedStock.selectedRaidAttack != nil && goldInfo().priceHistory.count > 0 && silverInfo().priceHistory.count > 0 && oilInfo().priceHistory.count > 0) {
             if (selectedStock.selectedRaidAttack!.gold > 0) {
-                expectedReturn += Double(selectedStock.selectedRaidAttack!.gold) * goldInfo().priceHistory.last!.price
+                expectedReturn += Double(selectedStock.selectedRaidAttack!.gold) * goldInfo().lastPrice
             }
             if (selectedStock.selectedRaidAttack!.silver > 0) {
-                expectedReturn += Double(selectedStock.selectedRaidAttack!.silver) * silverInfo().priceHistory.last!.price
+                expectedReturn += Double(selectedStock.selectedRaidAttack!.silver) * silverInfo().lastPrice
             }
             if (selectedStock.selectedRaidAttack!.oil > 0) {
-                expectedReturn += Double(selectedStock.selectedRaidAttack!.oil) * oilInfo().priceHistory.last!.price
+                expectedReturn += Double(selectedStock.selectedRaidAttack!.oil) * oilInfo().lastPrice
             }
-            let expectedReward = Double(totalReward) * selectedStock.priceHistory.last!.price
-            expectedReturn -= expectedReward
+            let expectedReward = Double(totalReward) * selectedStock.lastPrice
+            expectedReturn = expectedReward - expectedReturn
         }
         
         return expectedReturn
@@ -170,15 +170,15 @@ struct RaidDetail: View {
             
             //calculate minus to buyout from current market price
             if (gold_qty < 0) {
-                dollars_qty += Double(gold_qty) * goldInfo().priceHistory.last!.price
+                dollars_qty += Double(gold_qty) * goldInfo().lastPrice
                 gold_qty = 0
             }
             if (silver_qty < 0) {
-                dollars_qty += Double(silver_qty) * silverInfo().priceHistory.last!.price
+                dollars_qty += Double(silver_qty) * silverInfo().lastPrice
                 silver_qty = 0
             }
             if (oil_qty < 0) {
-                dollars_qty += Double(oil_qty) * oilInfo().priceHistory.last!.price
+                dollars_qty += Double(oil_qty) * oilInfo().lastPrice
                 oil_qty = 0
             }
             if (dollars_qty > 0) {

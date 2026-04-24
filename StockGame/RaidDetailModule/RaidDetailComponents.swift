@@ -18,7 +18,7 @@ struct RaidDetailMain: View {
             .font(.system(size: 60))
             .padding()
         
-        Text("$\(selectedStock.priceHistory.last!.price, specifier: "%.2f")")
+        Text("$\(selectedStock.lastPrice, specifier: "%.2f")")
             .font(.system(size: 44, weight: .bold, design: .rounded))
         
         

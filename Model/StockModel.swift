@@ -85,6 +85,10 @@ struct Commodity: Item {
     var category: ItemCategory
     var priceHistory: [PriceHistory]
     
+    var lastPrice: Double {
+        priceHistory.last?.price ?? 0.0
+    }
+    
     var change: Double {
         lastPrice - (priceHistory[0].price)
     }
