@@ -16,6 +16,10 @@ struct RaidDetail: View {
     
     var raidAttacks = SeedData.raidAttacks
     
+    @State var showConfirmationDialog: Bool = false
+    @State var showMessageDialog: Bool = false
+    @State var messageContent: String = ""
+    
     var body: some View {
     
         NavigationView {
@@ -84,7 +88,8 @@ struct RaidDetail: View {
                         }
                         
                         Button(action: {
-                            launchRaid()
+//                            launchRaid()
+                            validateRaid()
                         }) {
                             Text("Launch Operation")
                                 .font(.headline)
@@ -96,7 +101,9 @@ struct RaidDetail: View {
                         }
                     }
                     .padding()
+                    
                 }
+                
             }
             .navigationTitle("\(selectedStock.symbol) Operation Detail")
             .navigationBarTitleDisplayMode(.inline)
@@ -106,6 +113,20 @@ struct RaidDetail: View {
                         dismiss()
                     }
                 }
+            }
+            // This shows centered alert, not attached popup
+            .alert("System message", isPresented: $showConfirmationDialog) {
+                
+                Button("Yes") { launchRaid()}
+                Button("No", role: .cancel) { }
+            } message: {
+                Text("Are you sure you want to launch operation on \(selectedStock.symbol)")
+            }
+            .alert("System message", isPresented: $showMessageDialog) {
+                
+                Button("Close", role: .cancel) { }
+            } message: {
+                Text("\(messageContent)?")
             }
             
         }
@@ -160,6 +181,41 @@ struct RaidDetail: View {
     func oilInfo() -> Commodity {
         return commodities[2]
     }
+    func validateRaid() {
+        if (selectedStock.selectedRaidAttack != nil) {
+            // calculate expected inventory
+            var gold_qty = resources.gold - Int(selectedStock.selectedRaidAttack!.gold)
+            var silver_qty = resources.silver - Int(selectedStock.selectedRaidAttack!.silver)
+            var oil_qty = resources.oil - Int(selectedStock.selectedRaidAttack!.oil)
+            var dollars_qty = resources.dollars - Double(selectedStock.selectedRaidAttack!.dollars)
+            
+            //calculate minus to buyout from current market price
+            if (gold_qty < 0) {
+                dollars_qty += Double(gold_qty) * goldInfo().lastPrice
+                gold_qty = 0
+            }
+            if (silver_qty < 0) {
+                dollars_qty += Double(silver_qty) * silverInfo().lastPrice
+                silver_qty = 0
+            }
+            if (oil_qty < 0) {
+                dollars_qty += Double(oil_qty) * oilInfo().lastPrice
+                oil_qty = 0
+            }
+            if (dollars_qty >= 0) {
+                showConfirmationDialog.toggle()
+            }else {
+                //placeholder for notification lack of resources
+                messageContent = "You lack of resources to launch operation"
+                showMessageDialog.toggle()
+            }
+            
+        }else {
+            //placeholder for selecting raid method
+            messageContent = "Please select a raid method"
+            showMessageDialog.toggle()
+        }
+    }
     func launchRaid() {
         if (selectedStock.selectedRaidAttack != nil) {
             // calculate expected inventory
@@ -181,7 +237,7 @@ struct RaidDetail: View {
                 dollars_qty += Double(oil_qty) * oilInfo().lastPrice
                 oil_qty = 0
             }
-            if (dollars_qty > 0) {
+            if (dollars_qty >= 0) {
                 if (gold_qty != resources.gold) {
                     resources.updateGold(gold_qty)
                 }
@@ -200,10 +256,14 @@ struct RaidDetail: View {
                 dismiss()
             }else {
                 //placeholder for notification lack of resources
+                messageContent = "You lack of resources to launch operation"
+                showMessageDialog.toggle()
             }
             
         }else {
             //placeholder for selecting raid method
+            messageContent = "Please select a raid method"
+            showMessageDialog.toggle()
         }
     }
 }
