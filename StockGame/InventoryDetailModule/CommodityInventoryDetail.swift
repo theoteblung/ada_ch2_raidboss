@@ -13,6 +13,9 @@ struct CommodityInventoryDetail: View {
     @Binding var selectedCommodity: Commodity
     let resources: GameResources
     @State private var qty = 0
+    
+    @State var showMessageDialog: Bool = false
+    @State var messageContent: String = ""
     var body: some View {
     
         NavigationView {
@@ -96,6 +99,12 @@ struct CommodityInventoryDetail: View {
                     }
                 }
             }
+            .alert("System message", isPresented: $showMessageDialog) {
+                
+                Button("Close", role: .cancel) { }
+            } message: {
+                Text("\(messageContent)")
+            }
             
         }
     }
@@ -103,61 +112,79 @@ struct CommodityInventoryDetail: View {
     func SellCommodity() {
         if (resources.dollars > 0) {
             let ammount: Int = qty
-            print("qty: \(qty)")
-            print("amm \(ammount)")
-            if (selectedCommodity.symbol=="GLD") {
-                let expectedSell = Double(ammount) * selectedCommodity.lastPrice
-                if (expectedSell > 0) {
-                    let dollars_qty = resources.dollars + expectedSell
-                    resources.updateGold(resources.gold - ammount)
-                    resources.updateDollars(dollars_qty)
-                }
-            }else if (selectedCommodity.symbol=="SLV") {
-                let expectedSell = Double(ammount) * selectedCommodity.lastPrice
-                if (expectedSell > 0) {
-                    let dollars_qty = resources.dollars + expectedSell
-                    resources.updateSilver(resources.silver - ammount)
-                    resources.updateDollars(dollars_qty)
-                }
-            }else if (selectedCommodity.symbol=="OIL") {
-                let expectedSell = Double(ammount) * selectedCommodity.lastPrice
-                if (expectedSell > 0) {
-                    let dollars_qty = resources.dollars + expectedSell
-                    resources.updateOil(resources.oil - ammount)
-                    resources.updateDollars(dollars_qty)
+            let expectedSell = Double(ammount) * selectedCommodity.lastPrice
+            if (expectedSell <= 0) {
+                messageContent = "Please input quantity"
+                showMessageDialog.toggle()
+            }else {
+                if (selectedCommodity.symbol=="GLD") {
+                        
+                    if (ammount > resources.gold) {
+                        messageContent = "You lack gold to sell"
+                        showMessageDialog.toggle()
+                    }else {
+                        let dollars_qty = resources.dollars + expectedSell
+                        resources.updateGold(resources.gold - ammount)
+                        resources.updateDollars(dollars_qty)
+                        
+                        
+                        dismiss()
+                    }
+                }else if (selectedCommodity.symbol=="SLV") {
+                    if (ammount > resources.silver) {
+                        messageContent = "You lack silver to sell"
+                        showMessageDialog.toggle()
+                    }else {
+                        let dollars_qty = resources.dollars + expectedSell
+                        resources.updateSilver(resources.silver - ammount)
+                        resources.updateDollars(dollars_qty)
+                        
+                        
+                        dismiss()
+                    }
+                }else if (selectedCommodity.symbol=="OIL") {
+                    if (ammount > resources.oil) {
+                        messageContent = "You lack oil to sell"
+                        showMessageDialog.toggle()
+                    }else {
+                        let dollars_qty = resources.dollars + expectedSell
+                        resources.updateOil(resources.oil - ammount)
+                        resources.updateDollars(dollars_qty)
+                        
+                        
+                        dismiss()
+                    }
                 }
             }
             
-            dismiss()
         }
     }
     func BuyCommodity() {
         if (resources.dollars > 0) {
             let ammount: Int = qty
-            if (selectedCommodity.symbol=="GLD") {
-                let expectedBuy = Double(ammount) * selectedCommodity.lastPrice
-                if (expectedBuy > 0) {
-                    let dollars_qty = resources.dollars - expectedBuy
+            let expectedBuy = Double(ammount) * selectedCommodity.lastPrice
+            let dollars_qty = resources.dollars - expectedBuy
+            if (expectedBuy <= 0) {
+                messageContent = "Please input quantity"
+                showMessageDialog.toggle()
+            }else if (dollars_qty < 0) {
+                messageContent = "You lack of dollars to buy"
+                showMessageDialog.toggle()
+                
+            }else {
+                if (selectedCommodity.symbol=="GLD") {
                     resources.updateGold(resources.gold + ammount)
                     resources.updateDollars(dollars_qty)
-                }
-            }else if (selectedCommodity.symbol=="SLV") {
-                let expectedBuy = Double(ammount) * selectedCommodity.lastPrice
-                if (expectedBuy > 0) {
-                    let dollars_qty = resources.dollars - expectedBuy
+                }else if (selectedCommodity.symbol=="SLV") {
                     resources.updateSilver(resources.silver + ammount)
                     resources.updateDollars(dollars_qty)
-                }
-            }else if (selectedCommodity.symbol=="OIL") {
-                let expectedBuy = Double(ammount) * selectedCommodity.lastPrice
-                if (expectedBuy > 0) {
-                    let dollars_qty = resources.dollars - expectedBuy
+                }else if (selectedCommodity.symbol=="OIL") {
                     resources.updateOil(resources.oil + ammount)
                     resources.updateDollars(dollars_qty)
+                    
                 }
+                dismiss()
             }
-            
-            dismiss()
         }
     }
 }

@@ -120,13 +120,13 @@ struct RaidDetail: View {
                 Button("Yes") { launchRaid()}
                 Button("No", role: .cancel) { }
             } message: {
-                Text("Are you sure you want to launch operation on \(selectedStock.symbol)")
+                Text("Are you sure you want to launch operation on \(selectedStock.symbol)?")
             }
             .alert("System message", isPresented: $showMessageDialog) {
                 
                 Button("Close", role: .cancel) { }
             } message: {
-                Text("\(messageContent)?")
+                Text("\(messageContent)")
             }
             
         }

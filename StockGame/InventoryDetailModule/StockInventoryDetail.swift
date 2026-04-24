@@ -15,6 +15,9 @@ struct StockInventoryDetail: View {
     var resources: GameResources
     @State var editableStockQty: Int = 0
     
+    @State var showMessageDialog: Bool = false
+    @State var messageContent: String = ""
+    
     init(selectedStock: Binding<Stock>, selectedStockQty: Int, resources: GameResources) {
         self._selectedStock = selectedStock
         self.selectedStockQty = selectedStockQty
@@ -91,6 +94,12 @@ struct StockInventoryDetail: View {
                     }
                 }
             }
+            .alert("System message", isPresented: $showMessageDialog) {
+                
+                Button("Close", role: .cancel) { }
+            } message: {
+                Text("\(messageContent)")
+            }
             
         }
     }
@@ -105,6 +114,9 @@ struct StockInventoryDetail: View {
                 
             }
             dismiss()
+        }else {
+            messageContent = "You lack of stocks to sell"
+            showMessageDialog.toggle()
         }
     }
 }
