@@ -16,7 +16,7 @@ struct RaidView: View {
     let resources: GameResources
     @State var isPresented: Bool = false
     
-    @State private var selectedStock: Int = 0
+    @State private var selectedStock: Stock?
     
     private let newsTransitionTime: TimeInterval = 4 * 2 // in seconds
     
@@ -33,7 +33,7 @@ struct RaidView: View {
                     ForEach(stocks.indices, id: \.self) { index in
                         StocksCard(stock: stocks[index])
                             .onTapGesture {
-                                selectedStock = index
+                                selectedStock = stocks[index]
                                 Task {
                                     // Delay for 100 milliseconds
                                     try? await Task.sleep(for: .milliseconds(100))
@@ -54,8 +54,14 @@ struct RaidView: View {
                 
             }
             .toolbarView(gameTime: gameTime, resources: resources)
-            .sheet(isPresented: $isPresented) {
-                RaidDetail(selectedStock: $stocks[selectedStock], commodities: commodities, resources: resources)
+//            .sheet(isPresented: $isPresented) {
+//                RaidDetail(selectedStock: $stocks[selectedStock], commodities: commodities, resources: resources)
+//            }
+            .sheet(item: $selectedStock) { selected in
+                if let index = stocks.firstIndex(where: { $0.id == selected.id }) {
+                    RaidDetail(selectedStock: $stocks[index], commodities: commodities, resources: resources)
+                }
+                
             }
             .preferredColorScheme(.dark)
             
