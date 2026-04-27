@@ -75,11 +75,7 @@ struct RaidDetail: View {
                                 } else {
                                     Text("")
                                 }
-                                
-                                
-                                Text("Cost: \(selectedStock.selectedRaidAttack?.costDescription ?? "-")")
-                                    .font(.callout.bold())
-                                    .foregroundColor(.orange)
+                                RaidDetailCost(selectedRaidAttack: $selectedStock.selectedRaidAttack)
                                 if selectedStock.selectedRaidAttack != nil {
                                     Text("Return: \(getExpectedReturnDisplay())")
                                         .font(.callout.bold())
@@ -274,6 +270,7 @@ struct RaidDetail: View {
             showMessageDialog.toggle()
         }
     }
+    
 }
 
 

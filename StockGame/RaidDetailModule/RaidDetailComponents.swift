@@ -94,3 +94,34 @@ struct RaidDetailInfo: View {
         .font(.subheadline)
     }
 }
+struct RaidDetailCost: View {
+    @Binding var selectedRaidAttack: RaidAttack?
+    var body: some View {
+        // Header & Price
+        if (selectedRaidAttack != nil) {
+            HStack {
+                Text("Cost: ").font(.callout.bold()).foregroundColor(.orange)
+                if (selectedRaidAttack!.gold>0) {
+                    Text(" \(selectedRaidAttack!.gold)")
+                    Image("gold")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                }
+                if (selectedRaidAttack!.silver>0) {
+                    Text(" \(selectedRaidAttack!.silver)")
+                    Image("silver")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                }
+                if (selectedRaidAttack!.oil>0) {
+                    Text(" \(selectedRaidAttack!.oil)🛢️")
+                }
+                if (selectedRaidAttack!.dollars>0) {
+                    Text(" \(selectedRaidAttack!.dollars.formatted(.number.precision(.fractionLength(0))))💰")
+                }
+            }
+            
+        }
+        
+    }
+}

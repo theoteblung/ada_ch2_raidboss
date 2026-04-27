@@ -17,20 +17,4 @@ struct RaidAttack: Identifiable {
     var icon: String
     var tools: String
     var description: String
-    var costDescription: String {
-        var final_desc = ""
-        if (gold > 0) {
-            final_desc += "\(gold)🏅"
-        }
-        if (silver > 0) {
-            final_desc += "\(silver)🥈"
-        }
-        if (oil > 0) {
-            final_desc += "\(oil)🛢️"
-        }
-        if (dollars > 0) {
-            final_desc += "\(dollars)💰"
-        }
-        return final_desc
-    }
 }
