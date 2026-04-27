@@ -50,7 +50,7 @@ struct StockInventoryDetail: View {
                         
                         // Details Section
                         VStack(alignment: .leading, spacing: 12) {
-                            RaidDetailInfo(label: "Specialty", value: "Mac, Apple Watch, Iphone")
+                            RaidDetailInfo(label: "Specialty", value: "\(selectedStock.speciality)")
                             RaidDetailInfo(label: "Stock", value: "\(selectedStockQty) \(selectedStock.symbol) Shares")
                         }
                         .padding()

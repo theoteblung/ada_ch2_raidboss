@@ -47,7 +47,7 @@ struct RaidDetail: View {
                         
                         // Details Section
                         VStack(alignment: .leading, spacing: 12) {
-                            RaidDetailInfo(label: "Specialty", value: "Mac, Apple Watch, Iphone")
+                            RaidDetailInfo(label: "Specialty", value: "\(selectedStock.speciality)")
                             RaidDetailInfo(label: "Potential Reward", value: "100 \(selectedStock.symbol) Shares")
                         }
                         .padding()

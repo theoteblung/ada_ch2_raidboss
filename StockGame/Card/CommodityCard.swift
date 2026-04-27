@@ -67,6 +67,7 @@ struct CommodityCard: View {
     let commodity = Commodity.init(
         name: "Oil",
         symbol: "OIL",
+        speciality: "Commodities, Mining and Energy",
         category: .energy,
         priceHistory: []
     )

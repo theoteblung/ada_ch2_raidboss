@@ -15,6 +15,7 @@ enum SeedData {
             Stock(
                 symbol: "PLTR",
                 name: "Palantir Technologies",
+                speciality: "Big data, Analytics, and Software",
                 category: .technology,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 21.40),
@@ -27,6 +28,7 @@ enum SeedData {
             Stock(
                 symbol: "JPM",
                 name: "JPMorgan Chase",
+                speciality: "Investment, Private borrow and lending",
                 category: .finance,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 181.80),
@@ -39,6 +41,7 @@ enum SeedData {
             Stock(
                 symbol: "NEM",
                 name: "Newmont Corporation",
+                speciality: "Fertility medication",
                 category: .mining,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 36.50),
@@ -51,6 +54,7 @@ enum SeedData {
             Stock(
                 symbol: "LMT",
                 name: "Lockheed Martin",
+                speciality: "Defense tech, Aerospace and Security",
                 category: .defense,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 432.00),
@@ -63,6 +67,7 @@ enum SeedData {
             Stock(
                 symbol: "XOM",
                 name: "Exxon Mobil",
+                speciality: "Energy and Petrochemical production",
                 category: .energy,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 108.20),
@@ -75,6 +80,7 @@ enum SeedData {
             Stock(
                 symbol: "ADM",
                 name: "Archer-Daniels-Midland",
+                speciality: "Oilseed, Corn, Human nutrition and Biofuels",
                 category: .food,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 57.40),
@@ -92,33 +98,40 @@ enum SeedData {
             Commodity(
                 name: "Gold",
                 symbol: "GLD",
+                speciality: "Commodities, Mining and Metals",
                 category: .mining,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 195),
                     .init(date: Date().addingTimeInterval(day * -3), price: 210),
                     .init(date: Date().addingTimeInterval(day * -2), price: 190),
                     .init(date: Date().addingTimeInterval(day * -1), price: 210),
-                    .init(date: Date().addingTimeInterval(day), price: 259.20),
+//                    .init(date: Date().addingTimeInterval(day), price: 259.20),
                 ]
             ),
             Commodity(
                 name: "Silver",
                 symbol: "SLV",
+                speciality: "Commodities, Mining and Metals",
                 category: .mining,
                 priceHistory: [
-                    .init(date: Date(), price: 60),
+                    .init(date: Date().addingTimeInterval(day * -4), price: 120),
+                    .init(date: Date().addingTimeInterval(day * -3), price: 110),
+                    .init(date: Date().addingTimeInterval(day * -2), price: 90),
+                    .init(date: Date().addingTimeInterval(day * -1), price: 100),
+//                    .init(date: Date(), price: 60),
                 ]
             ),
             Commodity(
                 name: "Oil",
                 symbol: "OIL",
+                speciality: "Commodities, Mining and Energy",
                 category: .energy,
                 priceHistory: [
                     .init(date: Date().addingTimeInterval(day * -4), price: 100),
-                    .init(date: Date().addingTimeInterval(day * -3), price: 210),
-                    .init(date: Date().addingTimeInterval(day * -2), price: 190),
-                    .init(date: Date().addingTimeInterval(day * -1), price: 210),
-                    .init(date: Date().addingTimeInterval(day), price: 259.20),
+                    .init(date: Date().addingTimeInterval(day * -3), price: 80),
+                    .init(date: Date().addingTimeInterval(day * -2), price: 60),
+                    .init(date: Date().addingTimeInterval(day * -1), price: 120),
+//                    .init(date: Date().addingTimeInterval(day), price: 259.20),
                 ]
             ),
         ]
