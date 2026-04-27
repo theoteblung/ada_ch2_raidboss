@@ -137,9 +137,9 @@ enum SeedData {
         ]
     }
     static var raidAttacks: [RaidAttack] = [
-        RaidAttack(name: "Digital Intel", dollars: 0, gold: 1, silver: 10, oil: 0, icon: "laptopcomputer"),
-        RaidAttack(name: "Supply Sabotage", dollars: 0, gold: 3, silver: 0, oil: 10, icon: "airplane"),
-        RaidAttack(name: "Hostile Buyout", dollars: 10000, gold: 0, silver: 0, oil: 0, icon: "dollarsign.circle"),
+        RaidAttack(name: "Digital Intel", dollars: 0, gold: 1, silver: 10, oil: 0, icon: "laptopcomputer", tools: "Laptop", description: "Gather informations from enemy servers"),
+        RaidAttack(name: "Supply Sabotage", dollars: 0, gold: 3, silver: 0, oil: 10, icon: "airplane", tools: "Airplane", description: "Gather supplies from enemy bases"),
+        RaidAttack(name: "Hostile Buyout", dollars: 10000, gold: 0, silver: 0, oil: 0, icon: "dollarsign.circle", tools: "Money", description: "Gather enemy stock shares from the market"),
     ]
 
     static var newsItems: [NewsItem] {

@@ -15,6 +15,8 @@ struct RaidAttack: Identifiable {
     var silver: Int = 0
     var oil: Int = 0
     var icon: String
+    var tools: String
+    var description: String
     var costDescription: String {
         var final_desc = ""
         if (gold > 0) {

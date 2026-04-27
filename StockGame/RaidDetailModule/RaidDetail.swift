@@ -69,6 +69,14 @@ struct RaidDetail: View {
                             
                             // Efficiency Comparison
                             VStack(alignment: .leading, spacing: 5) {
+                                if selectedStock.selectedRaidAttack != nil {
+                                    Text("Desc: \(selectedStock.selectedRaidAttack!.description) using \(selectedStock.selectedRaidAttack!.tools)").font(.callout)
+                                        .foregroundColor(.white)
+                                } else {
+                                    Text("")
+                                }
+                                
+                                
                                 Text("Cost: \(selectedStock.selectedRaidAttack?.costDescription ?? "-")")
                                     .font(.callout.bold())
                                     .foregroundColor(.orange)
