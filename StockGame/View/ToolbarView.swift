@@ -55,5 +55,5 @@ extension View {
     NavigationStack {
         Text("Hello, World!")
     }
-        .toolbarView(gameTime: gameTime, resources: resources)
+    .toolbarView(gameTime: gameTime, resources: resources)
 }

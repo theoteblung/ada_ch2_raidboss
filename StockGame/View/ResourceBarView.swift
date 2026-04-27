@@ -12,12 +12,12 @@ struct ResourceBar: View {
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 4) {
-            ResourceItem(icon: "💰", amount: formattedDollar(resources.dollars))
+            ResourceItem(iconString: "💰", amount: formattedDollar(resources.dollars))
             
             HStack(spacing: 10) {
-                ResourceItem(icon: "🏅", amount: "\(resources.gold)")
-                ResourceItem(icon: "🥈", amount: "\(resources.silver)")
-                ResourceItem(icon: "🛢️", amount: "\(resources.oil)")
+                ResourceItem(icon: .gold, amount: "\(resources.gold)")
+                ResourceItem(icon: .silver, amount: "\(resources.silver)")
+                ResourceItem(iconString: "🛢️", amount: "\(resources.oil)")
             }
         }
     }
@@ -34,13 +34,21 @@ struct ResourceBar: View {
 }
 
 struct ResourceItem: View {
-    var icon: String
+    var icon: ImageResource?
+    var iconString: String?
     var amount: String
     
     var body: some View {
         HStack(spacing: 3) {
-            Text(icon)
-                .font(.system(size: 14))
+            if icon != nil {
+                Image(icon!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+            } else if iconString != nil {
+                Text(iconString!)
+                    .font(.system(size: 14))
+            }
             Text(amount)
                 .font(.system(size: 13, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
@@ -58,5 +66,5 @@ struct ResourceItem: View {
 }
 
 #Preview {
-    ResourceItem(icon: "🏅", amount: "100")
+    ResourceItem(icon: .gold, amount: "100")
 }
